@@ -35,6 +35,7 @@ noremap <LEADER>4 :set nosplitright<CR>:vsplit<CR>
 noremap <LEADER>6 :set splitright<CR>:vsplit<CR>
 call plug#begin('~/.vim/plugged')
 "插件
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline'
 Plug 'connorholyday/vim-snazzy'
 call plug#end()
@@ -97,11 +98,30 @@ map ,u o<audio controls><CR><source src="<++>" type="audio/<++>"><CR></audio><Es
 map ,b i<b><++></b><Esc>k
 map ,y o<pre><CR><++><CR></pre><Esc>k
 map ,<LEADER> $a<td></td><Esc>
-
-
-
-
-
-
-
-
+"coc补全代码
+inoremap <silent><expr> <TAB>
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :                                     
+        \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+inoremap <silent><expr> <c-space> coc#refresh()
+"两个，跳转到错误
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+"
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+"函数重命名
+nmap <leader>rn <Plug>(coc-rename)
+"两个，格式化
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)                                        
+"同词高亮
+autocmd CursorHold * silent call CocActionAsync('highlight')
